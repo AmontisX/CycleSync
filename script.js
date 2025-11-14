@@ -1,24 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
-  var calendarEl = document.getElementById('calendar');
-  
-  if(!calendarEl) return; // prevents errors if div isn't found
+  const calendarBody = document.getElementById('calendar-body');
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    dateClick: function(info) {
-      let log = prompt('Log your day: period, mood, or symptoms?');
-      if(log) {
-        saveLog(info.dateStr, log);
-        alert('Saved: ' + log);
+  // first day of the month
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let date = 1;
+  for(let i=0; i<6; i++) { // weeks
+    const row = document.createElement('tr');
+
+    for(let j=0; j<7; j++) { // days
+      const cell = document.createElement('td');
+      if(i === 0 && j < firstDay) {
+        cell.innerHTML = '';
+      } else if(date > daysInMonth) {
+        cell.innerHTML = '';
+      } else {
+        cell.innerHTML = date;
+        cell.style.cursor = 'pointer';
+        cell.addEventListener('click', () => {
+          const log = prompt('Log your day: period, mood, or symptoms?');
+          if(log) {
+            saveLog(date, log);
+            alert('Saved: ' + log);
+          }
+        });
+        date++;
       }
+      row.appendChild(cell);
     }
-  });
+    calendarBody.appendChild(row);
+  }
 
-  calendar.render();
-
-  function saveLog(date, value) {
-    let logs = JSON.parse(localStorage.getItem("cycleLogs")) || {};
-    logs[date] = value;
-    localStorage.setItem("cycleLogs", JSON.stringify(logs));
+  function saveLog(day, value) {
+    const key = `log-${day}`;
+    localStorage.setItem(key, value);
   }
 });
