@@ -1,0 +1,16 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #fdf6f0;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #a16eff;
+}
+
+#calendar {
+  max-width: 600px;
+  margin: 0 auto;
+}
